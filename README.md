@@ -17,7 +17,7 @@ Formatted Variables
     + The patient identifier is stripped in the formatting process leaving a number starting at 1. 
     <br>To create this table, one creates a table with 2 columns, the first is the unique identifier in the database, and the second is a number from 1 to n. This 2 column table is then used in ```ns.cdm``` as the id.table argument. It is important to keep this table as a permanent dataset, Because it is the only linkage between the CDM id's and the id variable in the data.
     + type: numeric
-    + example: 1,2,1500087
+    + example: 1, 2, 1500087
 <!---
 Figure out how to turn this into a better looking table
 --->
