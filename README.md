@@ -1,5 +1,5 @@
 <div>
-<img src="https://www.novisci.com/img/novisci_banner.png" height="50" width="200">
+<img src="https://www.novisci.com/img/novisci_banner.png" height="65" width="200">
 </div>
 
 
@@ -11,7 +11,7 @@ In an effort to create a data structure which can easily be utilized in a noSQL 
 
 Formatted Variables
 
--  <span style="font-weight:bold;">patient_id:</span> 
+-  **patient_id:**
     REQUIRED
     + description: synthetic patient identifier
     + The patient identifier is stripped in the formatting process leaving a number starting at 1. 
@@ -21,55 +21,55 @@ Formatted Variables
 <!---
 Figure out how to turn this into a better looking table
 --->
-    +
+
 |linkedid |patient_id |
 |---      |---        |
 |25681483 |1          |
 |18945632478  |2      |
 
-- <span style="font-weight:bold;">event_id:</span> 
+- **event_id:**
     REQUIRED
     + description: synthetic event identifier
     <br>The variable used in this table is essentially the row number of the data in its table. A permanent variable should be created in the source data to be referenced as the event_id to facilitate quickly finding relevant information in the source data when needed.
     + type: numeric
     + example: 1, 2, n...
 
-- <span style="font-weight:bold;">start_date:</span> 
+- **start_date:**
     DEFAULT (NA)
     + description: start date of an event or missing for information without a time dimension
     <br>For events which only have one date, ie procedures, start_date should be the date of the procedure and end_date should be left blank. However for items which are timeless, ie gender, race then both the start_date and end_date are left blank. Although this can be reported as Year only or Month and Year only, our current convention is that these variables should be converted to day 15 of the month for YYYY-MM and June 1 for Year only. In future versions this may be done internally by a function rather than having to be set before entering into the CDF.<br>This variable also has to be agreed upon before utilizing the database, as some tables will present multiple values which could be used, ie the Flatiron lab table which contains values for both test and result dates, or Medication orders which both have an order date and possibly an administered date. It shouldn't be a problem as long as we are consistent with which variable we choose.
     + type: date or numeric, needs to be consistent in for the entire format
     + format: "YYYY-MM-DD HH:MM:SS TZ", "YYYY-MM-DD", "YYYY-MM", "YYYY", or "NA" for missing values
 
-- <span style="font-weight:bold;">end_date:</span> 
+- **end_date:**
     DEFAULT (NA)
     + description: end date of an event
     <br>This variable can be left as NA if no the type of variable makes no sense to end. For medications this date should be calculated as start date + days supply. This should be calculated before it goes into the CDF. <span style="color:red;text-decoration: underline">Important</span> This variable should be the raw start and end dates of enrollment and medication, without any algorithms to define continuous use.
     + type: date
     + format: same as start_date
 
-- <span style="font-weight:bold;">source_db:</span> 
+- **source_db:**
     REQUIRED
     + description: the name of the source database
     <br>This particularly important if we combine multiple data sources into one database of the CDF. This way it is easy to determine what the data is and where it came from.
     + type: character
     + format: string of the name
     + example: Flatiron, Marketscan
-- <span style="font-weight:bold;">source_table:</span> 
+- **source_table:**
     REQUIRED
     + description: name of the table within the source database 
     <br>Important for reference back to the original data. Also necessary to differentiate between diagnoses in the inpatient and outpatient environments.
     + type: character
     + format: string of name
     + example: MCTVOutpatientServices, Diagnosis, etc...
-- <span style="font-weight:bold;">source_column:</span> 
+- **source_column:**
     REQUIRED
     + description: name of the column within the table
     <br>This is necessary to easily be able to go back to the specific variable, and combined with the id and the event_id a specific record can be retrieved. Also it is important to know which place the variable occurred in, ie dx1, dx2, dx3. <br>TODO: This may need to be changed from source_column to something more ambiguous if we find that other databases rather than having different variables as wide columns, as different rows. Maybe something like relative position, or what is it?
     + type: character
     + format: string
     + example: dx1, dx2, proc1, proc15, diagnosiscode
-- <span style="font-weight:bold;">type:</span> 
+- **type:** 
     DEFAULT (NA)
     + description: field for collecting additional information about a code and/or value
     <br>TODO: Possibly used as an omnibus category, Diagnosis, Procedure, or Inpatient, Outpatient, Medication
@@ -77,14 +77,14 @@ Figure out how to turn this into a better looking table
     + type: character or possibly a number which corresponds to a category to make indexing and querying faster
     + format: TBD
     + example: Unknown
-- <span style="font-weight:bold;">code:</span> 
+- **code:** 
     REQUIRED (Except maybe for enrollment)
     + description: Value of the source_column. 
     <br>Generally this is thought of as a code Because the most common thing that we are exporting are diagnosis and procedure codes, however it may make sense for it to be called something else as it can be stored as different things. This column would also include things like NDC numbers, diagnosis and procedure codes, demographic variables. This value really is only useful 
     + type: character
     + format: string
     + example: 733.00, M80, 99211
-- <span style="font-weight:bold;">value:</span> 
+- **value:** 
     DEFAULT (NA)
     + description: Additional value from source_table. 
     <br>When there are more than one value in the source_table that we decide that we need, we can store it in the value variable. An example is labs where the LOINC would take up the code variable, but we need to know what the result of the lab is, in case we need to later characterize the result, rather than simply the knowledge that the event occurred. Another example of this would be dosage of medication when the the NDC is not be captured, but rather than generic name of the drug.<br>TODO: Labs and medications offer a question of if another variable is need to capture information such as unit of measure, as some tests can be reported in two different ways. However if we capture both the dosage and unit of measure it will make it more difficult to query.
